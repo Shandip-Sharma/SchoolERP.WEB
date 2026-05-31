@@ -1,0 +1,92 @@
+@model Web.Models.StudentFormViewModel
+
+<form asp-action="Edit" method="post" class="needs-validation">
+    <div asp-validation-summary="ModelOnly" class="text-danger validation-summary mb-3"></div>
+    
+    <!-- Hidden fields -->
+    <input type="hidden" asp-for="Id" />
+
+    <h5 class="text-primary-custom font-weight-bold mb-3 border-bottom pb-2">Personal Information</h5>
+    
+    <div class="form-row-custom">
+        <div class="form-group-custom flex-1">
+            <label asp-for="FirstName" class="form-label-custom">First Name</label>
+            <input asp-for="FirstName" class="form-control-custom" placeholder="First name" required />
+            <span asp-validation-for="FirstName" class="text-danger field-validation"></span>
+        </div>
+
+        <div class="form-group-custom flex-1">
+            <label asp-for="LastName" class="form-label-custom">Last Name</label>
+            <input asp-for="LastName" class="form-control-custom" placeholder="Last name" required />
+            <span asp-validation-for="LastName" class="text-danger field-validation"></span>
+        </div>
+    </div>
+
+    <div class="form-row-custom">
+        <div class="form-group-custom flex-1">
+            <label asp-for="DateOfBirth" class="form-label-custom">Date of Birth</label>
+            <input asp-for="DateOfBirth" class="form-control-custom" type="date" required />
+            <span asp-validation-for="DateOfBirth" class="text-danger field-validation"></span>
+        </div>
+
+        <div class="form-group-custom flex-1">
+            <label asp-for="Gender" class="form-label-custom">Gender</label>
+            <select asp-for="Gender" class="form-control-custom" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            <span asp-validation-for="Gender" class="text-danger field-validation"></span>
+        </div>
+    </div>
+
+    <h5 class="text-primary-custom font-weight-bold mt-4 mb-3 border-bottom pb-2">Academic & Contact Information</h5>
+
+    <div class="form-row-custom">
+        <div class="form-group-custom flex-1">
+            <label asp-for="Grade" class="form-label-custom">Grade / Class</label>
+            <input asp-for="Grade" class="form-control-custom" placeholder="e.g. Grade 10" required />
+            <span asp-validation-for="Grade" class="text-danger field-validation"></span>
+        </div>
+
+        <div class="form-group-custom flex-1">
+            <label asp-for="Section" class="form-label-custom">Section</label>
+            <input asp-for="Section" class="form-control-custom" placeholder="e.g. A" required />
+            <span asp-validation-for="Section" class="text-danger field-validation"></span>
+        </div>
+
+        <div class="form-group-custom flex-1">
+            <label asp-for="RollNo" class="form-label-custom">Roll Number</label>
+            <input asp-for="RollNo" class="form-control-custom" type="number" placeholder="Roll No" required />
+            <span asp-validation-for="RollNo" class="text-danger field-validation"></span>
+        </div>
+    </div>
+
+    <div class="form-row-custom">
+        <div class="form-group-custom flex-1">
+            <label asp-for="Email" class="form-label-custom">Email Address</label>
+            <input asp-for="Email" class="form-control-custom" type="email" placeholder="student@example.com" required />
+            <span asp-validation-for="Email" class="text-danger field-validation"></span>
+        </div>
+
+        <div class="form-group-custom flex-1">
+            <label asp-for="Phone" class="form-label-custom">Phone Number</label>
+            <input asp-for="Phone" class="form-control-custom" placeholder="e.g. 9841234567" required />
+            <span asp-validation-for="Phone" class="text-danger field-validation"></span>
+        </div>
+    </div>
+
+    <div class="form-group-custom mt-2">
+        <label asp-for="Address" class="form-label-custom">Residential Address</label>
+        <textarea asp-for="Address" class="form-control-custom" rows="3" placeholder="Full residential address..." required></textarea>
+        <span asp-validation-for="Address" class="text-danger field-validation"></span>
+    </div>
+
+    <div class="mt-4 pt-3 border-top d-flex gap-3 justify-content-end">
+        <a asp-action="Index" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</a>
+        <button type="submit" class="btn-primary-custom px-5">Save Changes</button>
+    </div>
+</form>
+
+<partial name="_ValidationScriptsPartial" />

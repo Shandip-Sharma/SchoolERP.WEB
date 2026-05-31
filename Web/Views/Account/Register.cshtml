@@ -1,0 +1,68 @@
+@model Web.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-subtitle">Get access to School ERP portal</p>
+        </div>
+
+        <form asp-controller="Account" asp-action="Register" method="post" class="auth-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+            <div class="form-row-custom">
+                <div class="form-group-custom flex-1">
+                    <label asp-for="FirstName" class="form-label-custom">First Name</label>
+                    <input asp-for="FirstName" class="form-control-custom" placeholder="John" />
+                    <span asp-validation-for="FirstName" class="text-danger field-validation"></span>
+                </div>
+
+                <div class="form-group-custom flex-1">
+                    <label asp-for="LastName" class="form-label-custom">Last Name</label>
+                    <input asp-for="LastName" class="form-control-custom" placeholder="Doe" />
+                    <span asp-validation-for="LastName" class="text-danger field-validation"></span>
+                </div>
+            </div>
+
+            <div class="form-group-custom">
+                <label asp-for="Email" class="form-label-custom">Email Address</label>
+                <input asp-for="Email" class="form-control-custom" placeholder="john.doe@school.com" />
+                <span asp-validation-for="Email" class="text-danger field-validation"></span>
+            </div>
+
+            <div class="form-group-custom">
+                <label asp-for="Password" class="form-label-custom">Password</label>
+                <input asp-for="Password" class="form-control-custom" placeholder="Min. 6 characters" />
+                <span asp-validation-for="Password" class="text-danger field-validation"></span>
+            </div>
+
+            <div class="form-group-custom">
+                <label asp-for="ConfirmPassword" class="form-label-custom">Confirm Password</label>
+                <input asp-for="ConfirmPassword" class="form-control-custom" placeholder="••••••••" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger field-validation"></span>
+            </div>
+
+            <div class="form-group-custom">
+                <label asp-for="Role" class="form-label-custom">Assigned Role</label>
+                <select asp-for="Role" class="form-control-custom">
+                    <option value="User">Standard User (View Only)</option>
+                    <option value="Admin">Administrator (Full CRUD)</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger field-validation"></span>
+            </div>
+
+            <button type="submit" class="btn-primary-custom w-100 mt-2">Register</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a asp-action="Login" class="auth-link">Sign In</a></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,266 @@
+@model IEnumerable<Domain.Entities.Student.StudentBasicInfo>
+@{
+    ViewData["Title"] = "Student Roster";
+    var isAdmin = User.IsInRole("Admin");
+    int currentPage = ViewBag.PageNumber;
+    int totalPages = ViewBag.TotalPages;
+    int pageSize = ViewBag.PageSize;
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="h2 text-dark font-weight-bold mb-1">Student Management</h1>
+        </div>
+        <div class="text-end d-flex align-items-center justify-content-end gap-3">
+            @if (isAdmin)
+            {
+                <a asp-action="Create" class="btn-primary-custom d-inline-flex align-items-center gap-2" 
+                   data-ajax-modal="true" data-modal-size="modal-lg" data-modal-title="Add Student">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                    </svg>
+                    Add Student
+                </a>
+            }
+            else
+            {
+                <button class="btn btn-secondary disabled" title="Requires Administrator privileges">
+                    Add Student (Read-Only)
+                </button>
+            }
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success-custom d-flex align-items-center justify-content-between mb-4 fade show" role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+                <span>@TempData["SuccessMessage"]</span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Search and Filters Panel -->
+    <div class="card card-custom mb-4">
+        <div class="card-body-custom p-4">
+            <h5 class="card-title-custom mb-3">Search & Filter</h5>
+            <form method="get" asp-action="Index" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label-custom">Search Name</label>
+                    <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control-custom" placeholder="Search by name..." />
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <label class="form-label-custom">Grade</label>
+                    <select name="grade" class="form-control-custom">
+                        <option value="">All Grades</option>
+                        @foreach (var g in ViewBag.Grades)
+                        {
+                            if (g == ViewBag.Grade)
+                            {
+                                <option value="@g" selected>@g</option>
+                            }
+                            else
+                            {
+                                <option value="@g">@g</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <label class="form-label-custom">Gender</label>
+                    <select name="gender" class="form-control-custom">
+                        <option value="">All Genders</option>
+                        @foreach (var genderOpt in new[] { "Male", "Female", "Other" })
+                        {
+                            if (genderOpt == ViewBag.Gender)
+                            {
+                                <option value="@genderOpt" selected>@genderOpt</option>
+                            }
+                            else
+                            {
+                                <option value="@genderOpt">@genderOpt</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <label class="form-label-custom">Page Size</label>
+                    <select name="pageSize" class="form-control-custom">
+                        @foreach (var size in new[] { 5, 10, 20, 50 })
+                        {
+                            if (size == pageSize)
+                            {
+                                <option value="@size" selected>@size per page</option>
+                            }
+                            else
+                            {
+                                <option value="@size">@size per page</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-9 d-flex gap-2">
+                    <button type="submit" class="btn-primary-custom flex-1">Apply Filters</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center justify-content-center px-3" title="Reset filters">
+                        Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card card-custom overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-custom mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Roll No</th>
+                        <th>Name</th>
+                        <th>Grade</th>
+                        <th>Section</th>
+                        <th>Gender</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Date of Birth</th>
+                        @if (isAdmin)
+                        {
+                            <th class="text-end pe-4">Actions</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="@(isAdmin ? 9 : 8)" class="text-center py-5">
+                                <div class="empty-state">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-muted bi bi-people mb-3" viewBox="0 0 16 16">
+                                        <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724C2.313 10.632 3.281 10 5 10c.08 0 .158.002.236.005L4.92 10ZM1 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                    </svg>
+                                    <h6 class="text-dark font-weight-bold">No Students Found</h6>
+                                    <p class="text-secondary mb-0">Try adjusting your filters or add a new student.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var student in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 font-weight-bold text-primary-custom">@student.RollNo</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle me-2">
+                                            @student.FirstName.Substring(0, 1)@student.LastName.Substring(0, 1)
+                                        </div>
+                                        <div>
+                                            <div class="font-weight-bold text-dark">@student.FirstName @student.LastName</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-light text-dark border">@student.Grade</span></td>
+                                <td><span class="badge bg-light text-secondary border">@student.Section</span></td>
+                                <td>
+                                    @if (student.Gender == "Male")
+                                    {
+                                        <span class="text-info"><i class="bi bi-gender-male"></i> Male</span>
+                                    }
+                                    else if (student.Gender == "Female")
+                                    {
+                                        <span class="text-danger"><i class="bi bi-gender-female"></i> Female</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">@student.Gender</span>
+                                    }
+                                </td>
+                                <td>@student.Phone</td>
+                                <td><a href="mailto:@student.Email" class="text-decoration-none">@student.Email</a></td>
+                                <td>@student.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                @if (isAdmin)
+                                {
+                                    <td class="text-end pe-4">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a asp-action="Edit" asp-route-id="@student.Id" class="btn btn-sm btn-outline-primary-custom" 
+                                               title="Edit student" data-ajax-modal="true" data-modal-size="modal-lg" data-modal-title="Edit Student">
+                                                Edit
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@student.Id" class="btn btn-sm btn-outline-danger-custom" 
+                                               title="Delete student" data-ajax-modal="true" data-modal-size="modal-md" data-modal-title="Delete Student Record">
+                                                Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer / Pagination Panel -->
+        <div class="card-footer-custom p-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 border-top">
+            <span class="text-secondary text-sm">
+                Showing entries <strong>@(((currentPage - 1) * pageSize) + 1)</strong> to <strong>@(Math.Min(currentPage * pageSize, ViewBag.TotalRecords))</strong> of <strong>@ViewBag.TotalRecords</strong>
+            </span>
+
+            @if (totalPages > 1)
+            {
+                <nav aria-label="Page navigation" class="mb-0">
+                    <ul class="pagination pagination-custom mb-0 gap-1">
+                        <!-- Previous Page -->
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" 
+                               asp-route-pageNumber="@(currentPage - 1)" 
+                               asp-route-pageSize="@pageSize"
+                               asp-route-searchString="@ViewBag.SearchString"
+                               asp-route-grade="@ViewBag.Grade"
+                               asp-route-gender="@ViewBag.Gender">
+                                Previous
+                            </a>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(currentPage == i ? "active" : "")">
+                                <a class="page-link" asp-action="Index" 
+                                   asp-route-pageNumber="@i" 
+                                   asp-route-pageSize="@pageSize"
+                                   asp-route-searchString="@ViewBag.SearchString"
+                                   asp-route-grade="@ViewBag.Grade"
+                                   asp-route-gender="@ViewBag.Gender">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Next Page -->
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" 
+                               asp-route-pageNumber="@(currentPage + 1)" 
+                               asp-route-pageSize="@pageSize"
+                               asp-route-searchString="@ViewBag.SearchString"
+                               asp-route-grade="@ViewBag.Grade"
+                               asp-route-gender="@ViewBag.Gender">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/student-index.js" asp-append-version="true"></script>
+}

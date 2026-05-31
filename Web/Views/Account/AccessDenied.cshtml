@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="auth-container">
+    <div class="auth-card text-center py-5">
+        <div class="access-denied-icon mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="text-danger bi bi-shield-slash" viewBox="0 0 16 16">
+                <path d="M1.09 1.09a.5.5 0 0 0-.09.155A10.875 10.875 0 0 0 7.93 0c.23.012.457.056.683.12l.507-.507a.5.5 0 0 0-.707-.708L7.93.437A9.878 9.878 0 0 1 1 8c0 1.258.232 2.452.652 3.553L.64 12.56a.5.5 0 1 0 .72.694l.82-.82a10.867 10.867 0 0 0 2.227 2.062l.506-.506a9.87 9.87 0 0 1-2.1-1.921l.82-.82A10.862 10.862 0 0 0 5.438 13.5l.507-.507a9.876 9.876 0 0 1-1.688-2.072l.82-.82a10.852 10.852 0 0 0 2.802 1.48l.507-.507a9.872 9.872 0 0 1-2.613-1.341l.82-.82a10.843 10.843 0 0 0 4.108.625l.507-.507a9.876 9.876 0 0 1-3.92-1.077l.82-.82a10.835 10.835 0 0 0 5.031-.194l.507-.507a9.866 9.866 0 0 1-4.843-.728l.82-.82a10.82 10.82 0 0 0 5.626-2.285l.507-.507A9.845 9.845 0 0 1 15 8c0-3.693-2.03-6.91-5.07-8.587l.507-.507a.5.5 0 0 0-.707-.708L8.683.12A10.875 10.875 0 0 0 1.09 1.09z"/>
+                <path d="m8.618 10.03 3.513-3.512a.5.5 0 1 1 .707.707l-3.512 3.513a.5.5 0 0 1-.708 0z"/>
+            </svg>
+        </div>
+        <h2 class="text-danger fw-bold mb-3">Access Denied</h2>
+        <p class="text-muted mb-4">
+            You do not have the required permissions or role authorization to access this page.<br>
+            Please sign in with a different account that has elevated access rights.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Go Home</a>
+            <a asp-controller="Student" asp-action="Index" class="btn btn-primary-custom">View Student List</a>
+        </div>
+    </div>
+</div>

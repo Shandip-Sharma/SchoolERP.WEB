@@ -1,0 +1,50 @@
+@model Web.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Sign In";
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Welcome Back</h2>
+            <p class="auth-subtitle">Sign in to your School ERP account</p>
+        </div>
+
+        <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="auth-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+            <div class="form-group-custom">
+                <label asp-for="Email" class="form-label-custom">Email Address</label>
+                <input asp-for="Email" class="form-control-custom" placeholder="you@school.com" autofocus autocomplete="email" />
+                <span asp-validation-for="Email" class="text-danger field-validation"></span>
+            </div>
+
+            <div class="form-group-custom">
+                <label asp-for="Password" class="form-label-custom">Password</label>
+                <input asp-for="Password" class="form-control-custom" placeholder="••••••••" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger field-validation"></span>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me-label">
+                    <input asp-for="RememberMe" class="checkbox-custom" />
+                    <span>@Html.DisplayNameFor(m => m.RememberMe)</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-primary-custom w-100">Sign In</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a asp-action="Register" class="auth-link">Register here</a></p>
+            <div class="demo-creds mt-3">
+                <small class="text-muted d-block">Demo Administrator Credentials:</small>
+                <code>Email: admin@school.com | Password: admin123</code>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
