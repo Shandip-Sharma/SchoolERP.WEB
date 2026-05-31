@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities.Security
-{
+{ 
     public class User: IdentityUser<int>
     {
         public string FirstName { get; set; }
